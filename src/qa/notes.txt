@@ -1,1 +1,7 @@
 FlipTix end point notes
+
+Register user end point
+    - Email parameter can be any integar, float, string, or array value.
+    - Phone parameter can be excluded from a request call, 
+    - First name can be any int, float, or array value.
+    - Last name can be any int, float, or array value.
