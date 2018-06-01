@@ -18,7 +18,7 @@ requests.packages.urllib3.disable_warnings()
 # setEnv.strip()
 
 # for testing we will default set an environment
-setEnv = 'ec2-52-53-244-112.us-west-1.compute.amazonaws.com:3001/'
+setEnv = 'http://ec2-52-53-244-112.us-west-1.compute.amazonaws.com:3001/'
 
 
 # Set test output flag.
@@ -77,8 +77,7 @@ class FlipTix:
         url = self.environment + data["RegisterUser"]
         
         headers = {
-            'Content-Type' : 'application/json',
-            'Cache-Control': 'no-cache'
+            'Content-Type' : 'application/json'
         }
         
         body = {}
@@ -371,7 +370,6 @@ class FlipTix:
 
 
 
-
 def testClass():
     # Declare class objects. Create class instance. DONE
     user = FlipTix()
@@ -387,39 +385,36 @@ def testClass():
 
 
 
-    # Method signature. DONE
-    # def verify_user(self, verifyBy='', email='', verificationCode='', 
-    #                password='', verifyByExclude=False,  emailExclude=False,
-    #                verificationCodeExclude=False, passwordExclude=False):
-    user.verify_user(data['testVerifyBy'], data['testEmail'], data['testVerificationCode'],
-                     data['testPassword'])
+    # # Method signature. DONE
+    # # def verify_user(self, verifyBy='', email='', verificationCode='', 
+    # #                password='', verifyByExclude=False,  emailExclude=False,
+    # #                verificationCodeExclude=False, passwordExclude=False):
+    # user.verify_user(data['testVerifyBy'], data['testEmail'], data['testVerificationCode'],
+    #                  data['testPassword'])
 
 
 
-    # Method signature. DONE
-    # def resend_code(self, verifyBy='', email='', verifyByExclude=False,  emailExclude=False):
-    user.resend_code(data['testVerifyBy'], data['testEmail'])
+    # # Method signature. DONE
+    # # def resend_code(self, verifyBy='', email='', verifyByExclude=False,  emailExclude=False):
+    # user.resend_code(data['testVerifyBy'], data['testEmail'])
 
 
 
-    # Method signature. DONE
-    # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
-    user.login(data['testEmail'], data['testPassword'])
+    # # Method signature. DONE
+    # # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
+    # user.login(data['testEmail'], data['testPassword'])
 
 
 
-    # Method signature. DONE
-    # def logout(self, Authorization='',  AuthorizationExclude=False):
-    user.logout(user.GetSessionToken())
+    # # Method signature. DONE
+    # # def logout(self, Authorization='',  AuthorizationExclude=False):
+    # user.logout(user.GetSessionToken())
 
 
 
-    # Method signature. DONE
-    # def login_check(self, Authorization='', AuthorizationExclude=False):
-    user.login_check(user.GetSessionToken())
+    # # Method signature. DONE
+    # # def login_check(self, Authorization='', AuthorizationExclude=False):
+    # user.login_check(user.GetSessionToken())
 
-
-
-   
 
 testClass()
