@@ -375,13 +375,13 @@ def testClass():
     user = FlipTix()
 
 
-    # Method signature. DONE
-    # def register_user(self, verifyBy='', email='', phone='', firstName='',
-    #             lastName='', password='', verifyByExclude=False,
-    #             emailExclude=False, phoneExclude=False, firstNameExclude=False,
-    #             lastNameExclude=False, passwordExclude=False):
-    user.register_user(data['testVerifyBy'], data['testEmail'], data['testPhone'],
-                       data['testFirstName'], data['testLastName'], data['testPassword'])
+    # # Method signature. DONE
+    # # def register_user(self, verifyBy='', email='', phone='', firstName='',
+    # #             lastName='', password='', verifyByExclude=False,
+    # #             emailExclude=False, phoneExclude=False, firstNameExclude=False,
+    # #             lastNameExclude=False, passwordExclude=False):
+    # user.register_user(data['testVerifyBy'], data['testEmail'], data['testPhone'],
+    #                    data['testFirstName'], data['testLastName'], data['testPassword'])
 
 
 
@@ -394,9 +394,9 @@ def testClass():
 
 
 
-    # # Method signature. DONE
-    # # def resend_code(self, verifyBy='', email='', verifyByExclude=False,  emailExclude=False):
-    # user.resend_code(data['testVerifyBy'], data['testEmail'])
+    # Method signature. DONE
+    # def resend_code(self, verifyBy='', email='', verifyByExclude=False,  emailExclude=False):
+    user.resend_code(data['testVerifyBy'], data['testEmail'])
 
 
 
