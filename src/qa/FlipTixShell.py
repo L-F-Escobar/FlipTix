@@ -375,13 +375,13 @@ def testClass():
     user = FlipTix()
 
 
-    # Method signature. DONE
-    # def register_user(self, verifyBy='', email='', phone='', firstName='',
-    #             lastName='', password='', verifyByExclude=False,
-    #             emailExclude=False, phoneExclude=False, firstNameExclude=False,
-    #             lastNameExclude=False, passwordExclude=False):
-    user.register_user(data['testVerifyBy'], data['testEmail'], data['testPhone'],
-                       data['testFirstName'], data['testLastName'], data['testPassword'])
+    # # Method signature. DONE
+    # # def register_user(self, verifyBy='', email='', phone='', firstName='',
+    # #             lastName='', password='', verifyByExclude=False,
+    # #             emailExclude=False, phoneExclude=False, firstNameExclude=False,
+    # #             lastNameExclude=False, passwordExclude=False):
+    # user.register_user(data['testVerifyBy'], data['testEmail'], data['testPhone'],
+    #                    data['testFirstName'], data['testLastName'], data['testPassword'])
 
 
 
@@ -400,9 +400,9 @@ def testClass():
 
 
 
-    # # Method signature. DONE
-    # # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
-    # user.login(data['testEmail'], data['testPassword'])
+    # Method signature. DONE
+    # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
+    user.login(data['testEmail'], data['testPassword'])
 
 
 
@@ -417,4 +417,4 @@ def testClass():
     # user.login_check(user.GetSessionToken())
 
 
-testClass()
+# testClass()

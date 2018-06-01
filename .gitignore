@@ -3,25 +3,13 @@
 # Database
 assets/
 
-# Configuration
-.env
-config.json
-config.js
-contig-staging.json
-constants.js
-
 # Logs
-logs/
-.logs/
+src/qa/data
+data/
 
 # Build Files
 build/contracts
 build/
-
-# Dependencies
-node_modules/
-
-# Cache
 
 # Python
 .pyc
@@ -33,5 +21,3 @@ __pycache__
 # Editors
 .vscode
 
-# Operating System
-.DS_Store
