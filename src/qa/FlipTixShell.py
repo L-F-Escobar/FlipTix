@@ -394,15 +394,15 @@ def testClass():
 
 
 
-    # Method signature. DONE
-    # def resend_code(self, verifyBy='', email='', verifyByExclude=False,  emailExclude=False):
-    user.resend_code(data['testVerifyBy'], data['testEmail'])
-
-
-
     # # Method signature. DONE
-    # # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
-    # user.login(data['testEmail'], data['testPassword'])
+    # # def resend_code(self, verifyBy='', email='', verifyByExclude=False,  emailExclude=False):
+    # user.resend_code(data['testVerifyBy'], data['testEmail'])
+
+
+
+    # Method signature. DONE
+    # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
+    user.login(data['testEmail'], data['testPassword'])
 
 
 
