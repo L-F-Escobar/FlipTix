@@ -375,6 +375,121 @@ class FlipTix:
 
 
 
+
+    ## @fn delete_user : deletes a user
+    #
+    def delete_user(self, verifyBy='', email='', phone='', firstName='',
+                 lastName='', password='', verifyByExclude=False,
+                 emailExclude=False, phoneExclude=False, firstNameExclude=False,
+                 lastNameExclude=False, passwordExclude=False):
+        
+        url = self.environment + data["DeleteUser"]
+        
+        headers = {
+            'Content-Type' : 'application/json',
+            'Cache-Control': 'no-cache'
+        }
+        
+        body = {}
+        
+        if verifyByExclude == True:
+            pass
+        elif verifyBy != '':
+            body['verifyBy'] = verifyBy
+        else:
+            body['verifyBy'] = ''
+            
+        if emailExclude == True:
+            pass
+        elif email != '':
+            body['email'] = email
+        else:
+            body['email'] = ''
+            
+        if phoneExclude == True:
+            pass
+        elif phone != '':
+            body['phone'] = phone
+        else:
+            body['phone'] = ''
+            
+        if firstNameExclude == True:
+            pass
+        elif firstName != '':
+            body['firstName'] = firstName
+        else:
+            body['firstName'] = ''
+            
+        if lastNameExclude == True:
+            pass
+        elif lastName != '':
+            body['lastName'] = lastName
+        else:
+            body['lastName'] = ''
+
+        if passwordExclude == True:
+            pass
+        elif password != '':
+            body['password'] = password
+        else:
+            body['password'] = ''
+            
+        response = requests.request('POST', url, json=body, headers=headers, verify=False)
+    
+        responseBody = response.json()
+        
+        if TestOutput == True:
+            print('\ndelete_user\n', responseBody)
+            print('\nresponse.status_code: ', response.status_code)
+        
+        # Grab the request Id of a successful call.
+        if 'result' in responseBody.keys():
+            if responseBody['result'] == "User has been created successfully. Please check your email for your verification code":
+                pass
+        
+        return responseBody
+
+
+
+
+    ## @fn send_forgot_password : send a temp verification code to the 
+    #                             users registered email address.
+    #
+    def send_forgot_password(self, email='', emailExclude=False):
+        
+        url = self.environment + data["SendForgotPassword"]
+        
+        headers = {
+            'Content-Type' : 'application/json',
+            'Cache-Control': 'no-cache'
+        }
+        
+        body = {}
+            
+        if emailExclude == True:
+            pass
+        elif email != '':
+            body['email'] = email
+        else:
+            body['email'] = ''
+            
+        response = requests.request('POST', url, json=body, headers=headers, verify=False)
+    
+        responseBody = response.json()
+        
+        if TestOutput == True:
+            print('\nsend_forgot_password\n', responseBody)
+            print('\nresponse.status_code: ', response.status_code)
+        
+        # Grab the request Id of a successful call.
+        if 'result' in responseBody.keys():
+            if responseBody['result'] == "User has been created successfully. Please check your email for your verification code":
+                pass
+        
+        return responseBody
+
+
+
     def GetSessionToken(self):
         return self.SessionToken
 
@@ -400,13 +515,11 @@ def testClass():
     #                    data['testFirstName'], data['testLastName'], data['testPassword'])
 
 
-
-    # Method signature. DONE
-    # def verify_user(self, verifyBy='', email='', verificationCode='', 
-    #                verifyByExclude=False,  emailExclude=False,
-    #                verificationCodeExclude=False):
-    user.verify_user(data['testVerifyBy'], data['testEmail'], data['testVerificationCode'])
-
+    # # Method signature. DONE
+    # # def verify_user(self, verifyBy='', email='', verificationCode='', 
+    # #                verifyByExclude=False,  emailExclude=False,
+    # #                verificationCodeExclude=False):
+    # user.verify_user(data['testVerifyBy'], data['testEmail'], data['testVerificationCode'])
 
 
     # # Method signature. DONE
@@ -414,11 +527,9 @@ def testClass():
     # user.resend_code(data['testVerifyBy'], data['testEmail'])
 
 
-
     # # Method signature. DONE
     # # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
     # user.login(data['testVerifiedEmail'], data['testPassword'])
-
 
 
     # # Method signature. DONE
@@ -426,15 +537,30 @@ def testClass():
     # user.logout(user.GetSessionToken())
 
 
-
     # # Method signature. DONE
     # # def login_check(self, Authorization='', cookies={}, AuthorizationExclude=False):
     # user.login_check(user.GetSessionToken(), user.GetCookies())
-
 
 
     # # Method signature. DONE
     # # def get_user_by_id(self, userId=''):
     # user.get_user_by_id(user.GetUserId())
 
-# testClass()
+
+    # # Method signature. NEED FURTHER DIRECTION FRMO NOEL HERE
+    # # def delete_user(self, verifyBy='', email='', phone='', firstName='',
+    # #             lastName='', password='', verifyByExclude=False,
+    # #             emailExclude=False, phoneExclude=False, firstNameExclude=False,
+    # #             lastNameExclude=False, passwordExclude=False):
+    # user.delete_user(data['testVerifyBy'], data['testEmail'], data['testPhone'],
+    #                  data['testFirstName'], data['testLastName'], data['testPassword'])
+
+
+    # Method signature. DONE
+    # def send_forgot_password(self, email='', emailExclude=False):
+    user.send_forgot_password(data['testEmail'])
+
+
+
+
+testClass()
