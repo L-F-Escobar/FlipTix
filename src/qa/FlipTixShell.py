@@ -63,6 +63,7 @@ class FlipTix:
         self.SessionToken = '' # Header is Authorization = SessionToken
         self.UserId = ''
         self.environment = env
+        self.loginCookie = {}
 
 
 
@@ -321,7 +322,8 @@ class FlipTix:
         # If successful, go in here.
         if 'result' in responseBody.keys():
             if responseBody['result'] == "Logged out":
-                pass
+                # Update the cookie.
+                self.loginCookie = response.cookies.get_dict()
         
         return responseBody
 
@@ -329,7 +331,7 @@ class FlipTix:
 
     ## @fn login_check : Authorization = self.SessionToken
     #
-    def login_check(self, Authorization='', AuthorizationExclude=False):
+    def login_check(self, Authorization='', cookies={}, AuthorizationExclude=False):
         
         url = self.environment + data["LoginCheck"]
         
@@ -345,18 +347,13 @@ class FlipTix:
         else:
             headers['Authorization'] = ''
             
-        response = requests.request('POST', url, json={}, headers=headers, verify=False)
+        response = requests.request('POST', url, json={}, headers=headers, cookies=cookies, verify=False)
     
         responseBody = response.json()
         
         if TestOutput == True:
             print('\nlogin_check\n', responseBody)
             print('\nresponse.status_code: ', response.status_code)
-        
-        # # If successful, go in here.
-        # if 'result' in responseBody.keys():
-        #     if responseBody['result'] == "Logged out":
-        #         pass
         
         return responseBody
 
@@ -367,6 +364,9 @@ class FlipTix:
 
     def GetUserId(self):
         return self.UserId
+    
+    def GetCookies(self):
+        return self.loginCookie
 
 
 
@@ -398,13 +398,13 @@ def testClass():
     # # def resend_code(self, verifyBy='', email='', verifyByExclude=False,  emailExclude=False):
     # user.resend_code(data['testVerifyBy'], data['testEmail'])
 
+    user.login_check(user.GetSessionToken(), user.GetCookies())
 
+    # Method signature. DONE
+    # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
+    user.login(data['testVerifiedEmail'], data['testPassword'])
 
-    # # Method signature. DONE
-    # # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
-    # user.login(data['testVerifiedEmail'], data['testPassword'])
-
-
+    user.login_check(user.GetSessionToken(), user.GetCookies())
 
     # Method signature. DONE
     # def logout(self, Authorization='', AuthorizationExclude=False):
@@ -412,9 +412,9 @@ def testClass():
 
 
 
-    # # Method signature. DONE
-    # # def login_check(self, Authorization='', AuthorizationExclude=False):
-    # user.login_check(user.GetSessionToken())
+    # Method signature. DONE
+    # def login_check(self, Authorization='', cookies={}, AuthorizationExclude=False):
+    user.login_check(user.GetSessionToken(), user.GetCookies())
 
 
-testClass()
+# testClass()
