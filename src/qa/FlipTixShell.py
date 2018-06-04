@@ -287,6 +287,7 @@ class FlipTix:
             if responseBody['result'] == "You have been logged in":
                 self.SessionToken = responseBody['sessionToken']
                 self.UserId = responseBody['userId']
+                self.loginCookie = response.cookies.get_dict()
         
         return responseBody
 
@@ -294,13 +295,12 @@ class FlipTix:
 
     ## @fn logout : logs an active user out. Authorization = self.SessionToken
     #
-    def logout(self, Authorization='',  AuthorizationExclude=False):
+    def logout(self, Authorization='', AuthorizationExclude=False):
         
         url = self.environment + data["Logout"]
         
         headers = {
-            'Content-Type' : 'application/json',
-            'Cache-Control': 'no-cache'
+            'Content-Type' : 'application/json'
         }
 
         if AuthorizationExclude == True:
@@ -310,8 +310,8 @@ class FlipTix:
         else:
             headers['Authorization'] = ''
             
-        response = requests.request('POST', url, json={}, headers=headers, verify=False)
-    
+        response = requests.request('POST', url, json={}, headers=headers)
+
         responseBody = response.json()
         
         if TestOutput == True:
@@ -400,15 +400,15 @@ def testClass():
 
 
 
-    # Method signature. DONE
-    # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
-    user.login(data['testEmail'], data['testPassword'])
-
-
-
     # # Method signature. DONE
-    # # def logout(self, Authorization='',  AuthorizationExclude=False):
-    # user.logout(user.GetSessionToken())
+    # # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
+    # user.login(data['testVerifiedEmail'], data['testPassword'])
+
+
+
+    # Method signature. DONE
+    # def logout(self, Authorization='', AuthorizationExclude=False):
+    user.logout(user.GetSessionToken())
 
 
 
@@ -417,4 +417,4 @@ def testClass():
     # user.login_check(user.GetSessionToken())
 
 
-# testClass()
+testClass()

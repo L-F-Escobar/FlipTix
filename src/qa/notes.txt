@@ -12,3 +12,8 @@ Resend code end point
 
 Login end point 
     - Email parameter can be any integar, float, string, or array value.
+
+Log out end point   
+    - If a user logs in and them logs out, that user will be able to successfully execute
+      the end point ad infinitum. 
+    - If a user logs in that user will be able to log out with an invalid authorization key.

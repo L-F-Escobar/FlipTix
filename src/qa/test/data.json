@@ -3,7 +3,7 @@
     "VerifyUser":"api/v1/verifyCode",
     "ResendCode":"api/v1/resendCode",
     "Login":"api/v1/login",
-    "Logout":"api/vi/logout",
+    "Logout":"api/v1/logout",
     "LoginCheck":"api/v1/checkLogin",
     "":"",
     "":"",
