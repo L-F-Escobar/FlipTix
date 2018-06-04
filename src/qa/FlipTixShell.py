@@ -359,6 +359,29 @@ class FlipTix:
 
 
 
+    ## @fn get_user_by_id : pull up user data with their id.
+    #
+    def get_user_by_id(self, userId='', userIdExclude=False):
+        
+        url = self.environment + data["GetUserById"] + userId
+
+        headers = {
+            'Content-Type' : 'application/json',
+            'Cache-Control': 'no-cache'
+        }
+            
+        response = requests.request('GET', url, json={}, headers=headers, verify=False)
+    
+        responseBody = response.json()
+        
+        if TestOutput == True:
+            print('\nget_user_by_id\n', responseBody)
+            print('\nresponse.status_code: ', response.status_code)
+        
+        return responseBody
+
+
+
     def GetSessionToken(self):
         return self.SessionToken
 
@@ -398,23 +421,28 @@ def testClass():
     # # def resend_code(self, verifyBy='', email='', verifyByExclude=False,  emailExclude=False):
     # user.resend_code(data['testVerifyBy'], data['testEmail'])
 
-    user.login_check(user.GetSessionToken(), user.GetCookies())
+
 
     # Method signature. DONE
     # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
     user.login(data['testVerifiedEmail'], data['testPassword'])
 
-    user.login_check(user.GetSessionToken(), user.GetCookies())
-
-    # Method signature. DONE
-    # def logout(self, Authorization='', AuthorizationExclude=False):
-    user.logout(user.GetSessionToken())
 
 
+    # # Method signature. DONE
+    # # def logout(self, Authorization='', AuthorizationExclude=False):
+    # user.logout(user.GetSessionToken())
 
-    # Method signature. DONE
-    # def login_check(self, Authorization='', cookies={}, AuthorizationExclude=False):
-    user.login_check(user.GetSessionToken(), user.GetCookies())
 
 
-# testClass()
+    # # Method signature. DONE
+    # # def login_check(self, Authorization='', cookies={}, AuthorizationExclude=False):
+    # user.login_check(user.GetSessionToken(), user.GetCookies())
+
+
+
+    # # Method signature. DONE
+    # # def get_user_by_id(self, userId=''):
+    # user.get_user_by_id(user.GetUserId())
+
+testClass()
