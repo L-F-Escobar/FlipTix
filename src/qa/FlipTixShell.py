@@ -146,8 +146,8 @@ class FlipTix:
     ## @fn verify_user : sends out a confirmation code to the users email
     #
     def verify_user(self, verifyBy='', email='', verificationCode='', 
-                    password='', verifyByExclude=False,  emailExclude=False,
-                    verificationCodeExclude=False, passwordExclude=False):
+                    verifyByExclude=False,  emailExclude=False,
+                    verificationCodeExclude=False):
         
         url = self.environment + data["VerifyUser"]
         
@@ -178,13 +178,6 @@ class FlipTix:
             body['verificationCode'] = verificationCode
         else:
             body['verificationCode'] = ''
-            
-        if passwordExclude == True:
-            pass
-        elif password != '':
-            body['password'] = password
-        else:
-            body['password'] = ''
             
         response = requests.request('POST', url, json=body, headers=headers, verify=False)
     
@@ -408,12 +401,11 @@ def testClass():
 
 
 
-    # # Method signature. DONE
-    # # def verify_user(self, verifyBy='', email='', verificationCode='', 
-    # #                password='', verifyByExclude=False,  emailExclude=False,
-    # #                verificationCodeExclude=False, passwordExclude=False):
-    # user.verify_user(data['testVerifyBy'], data['testEmail'], data['testVerificationCode'],
-    #                  data['testPassword'])
+    # Method signature. DONE
+    # def verify_user(self, verifyBy='', email='', verificationCode='', 
+    #                verifyByExclude=False,  emailExclude=False,
+    #                verificationCodeExclude=False):
+    user.verify_user(data['testVerifyBy'], data['testEmail'], data['testVerificationCode'])
 
 
 
@@ -423,9 +415,9 @@ def testClass():
 
 
 
-    # Method signature. DONE
-    # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
-    user.login(data['testVerifiedEmail'], data['testPassword'])
+    # # Method signature. DONE
+    # # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
+    # user.login(data['testVerifiedEmail'], data['testPassword'])
 
 
 
@@ -445,4 +437,4 @@ def testClass():
     # # def get_user_by_id(self, userId=''):
     # user.get_user_by_id(user.GetUserId())
 
-testClass()
+# testClass()
