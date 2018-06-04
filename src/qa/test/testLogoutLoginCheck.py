@@ -1,14 +1,16 @@
 import sys, unittest, FlipTixShell
 
 '''
-    FlipTix logout end point.
+    FlipTix logout & login check end point.
     
     Purpose - logs out a user who was previously logged in.
+              checks the log in status of a user
     
     Notes - 
 
     Method signature:
         def logout(self, Authorization='', AuthorizationExclude=False):
+        def login_check(self, Authorization='', cookies={}, AuthorizationExclude=False):
     
     Required:
         Authorization
@@ -17,6 +19,8 @@ import sys, unittest, FlipTixShell
         Successfully log out.
 
         Attempt to log out a user that is already logged out. 
+
+        Attempt to log out with invalid auth key data.
 '''
 class TestLogout(unittest.TestCase):
 
@@ -40,32 +44,54 @@ class TestLogout(unittest.TestCase):
 
 
 
-    # Test successfully logging in.
+    # Test successfully logging out.
     def test_success(self):
-        # Log in.
+        responseBody = self.user.login_check(Authorization = self.user.GetSessionToken(),
+                                             cookies = self.user.GetCookies())
+        
+        self.assertEqual(responseBody['result'], 'Logged in', 
+                         msg= 'test_Success assert#1 has failed.')
+
         responseBody = self.user.logout(Authorization = self.user.GetSessionToken())
         
         self.assertEqual(responseBody['result'], 'Logged out', 
-                         msg= 'test_Success assert#1 has failed.')
+                         msg= 'test_Success assert#2 has failed.')
+
+        responseBody = self.user.login_check(Authorization = self.user.GetSessionToken(),
+                                             cookies = self.user.GetCookies())
+        
+        self.assertEqual(responseBody['error'], 'Token is no longer valid', 
+                         msg= 'test_Success assert#3 has failed.')
     
     
         
     # Attempting to log out a user which was previously logged in.
     @unittest.skip("Should not work - user should already be logged out (BUG)")
     def test_doubleLogout(self):
+        responseBody = self.user.login_check(Authorization = self.user.GetSessionToken(),
+                                             cookies = self.user.GetCookies())
+        
+        self.assertEqual(responseBody['error'], 'Token is no longer valid', 
+                         msg= 'test_doubleLogout assert#1 has failed.')
+
         responseBody = self.user.logout(Authorization = self.user.GetSessionToken())
 
         self.assertEqual(responseBody['result'], 'Logged out', 
-                         msg='test_doubleLogout assert#1 has failed.')
+                         msg='test_doubleLogout assert#2 has failed.')
         
         
         
     # Invalid authorization data.
     @unittest.skip("Should not work - user is hitting endpt with invalid auth key (BUG)")
     def test_invalidAuthorization(self):
-        # Null Email value.
         self.user.login(email = FlipTixShell.data['testVerifiedEmail'], 
                         password = FlipTixShell.data['testPassword'])
+        
+        responseBody = self.user.login_check(Authorization = self.user.GetSessionToken(),
+                                             cookies = self.user.GetCookies())
+        
+        self.assertEqual(responseBody['result'], 'Logged in', 
+                         msg= 'test_doubleLogout assert#1 has failed.')
 
         responseBody = self.user.logout(Authorization = 'invalid authorization')
 
