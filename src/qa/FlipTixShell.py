@@ -490,6 +490,47 @@ class FlipTix:
 
 
 
+
+    ## @fn change_password : allows the user to change their password
+    #
+    def change_password(self, userId='', newPassword='', userIdExclude=False,
+                        newPasswordExclude=False):
+        
+        url = self.environment + data["ChangePassword"]
+        
+        headers = {
+            'Content-Type' : 'application/json',
+            'Cache-Control': 'no-cache'
+        }
+        
+        body = {}
+            
+        if userIdExclude == True:
+            pass
+        elif userId != '':
+            body['userId'] = userId
+        else:
+            body['userId'] = ''
+
+        if newPasswordExclude == True:
+            pass
+        elif newPassword != '':
+            body['newPassword'] = newPassword
+        else:
+            body['newPassword'] = ''
+            
+        response = requests.request('PATCH', url, json=body, headers=headers, verify=False)
+
+        responseBody = response.json()
+        
+        if TestOutput == True:
+            print('\nchange_password\n', responseBody)
+            print('\nresponse.status_code: ', response.status_code)
+        
+        return responseBody
+
+
+
     def GetSessionToken(self):
         return self.SessionToken
 
@@ -527,9 +568,9 @@ def testClass():
     # user.resend_code(data['testVerifyBy'], data['testEmail'])
 
 
-    # # Method signature. DONE
-    # # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
-    # user.login(data['testVerifiedEmail'], data['testPassword'])
+    # Method signature. DONE
+    # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
+    user.login(data['testVerifiedEmail'], data['testPassword'])
 
 
     # # Method signature. DONE
@@ -547,7 +588,8 @@ def testClass():
     # user.get_user_by_id(user.GetUserId())
 
 
-    # # Method signature. NEED FURTHER DIRECTION FRMO NOEL HERE
+    # NEED FURTHER DIRECTION FRMO NOEL HERE ``````````````````````````````````````````````
+    # # Method signature. 
     # # def delete_user(self, verifyBy='', email='', phone='', firstName='',
     # #             lastName='', password='', verifyByExclude=False,
     # #             emailExclude=False, phoneExclude=False, firstNameExclude=False,
@@ -556,11 +598,15 @@ def testClass():
     #                  data['testFirstName'], data['testLastName'], data['testPassword'])
 
 
-    # Method signature. DONE
-    # def send_forgot_password(self, email='', emailExclude=False):
-    user.send_forgot_password(data['testEmail'])
+    # # Method signature. DONE
+    # # def send_forgot_password(self, email='', emailExclude=False):
+    # user.send_forgot_password(data['testEmail'])
 
 
+    # # Method signature. DONE
+    # # def change_password(self, userId='', newPassword='', userIdExclude=False,
+    # #                    newPasswordExclude=False):
+    # user.change_password(user.GetUserId(), 'NewPassword')
 
 
-testClass()
+# testClass()

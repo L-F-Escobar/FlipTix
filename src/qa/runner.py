@@ -7,6 +7,7 @@ from test import testLogoutLoginCheck # This one is 2 endpoints
 from test import testGetUserById
 from test import testVerifyUser
 from test import testSendForgotPassword
+from test import testChangePassword
 
 # Initialize a test loader & test suite package.
 loader = unittest.TestLoader()
@@ -18,7 +19,8 @@ suite  = unittest.TestSuite()
 # suite.addTests(loader.suiteClass(testLogoutLoginCheck.suite()))
 # suite.addTests(loader.suiteClass(testGetUserById.suite()))
 # suite.addTests(loader.suiteClass(testVerifyUser.suite()))
-suite.addTests(loader.suiteClass(testSendForgotPassword.suite()))
+# suite.addTests(loader.suiteClass(testSendForgotPassword.suite()))
+suite.addTests(loader.suiteClass(testChangePassword.suite()))
 
 # Initialize an xml runner.
 testRunner=xmlrunner.XMLTestRunner(output='data/testReports', verbosity=2)
