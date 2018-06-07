@@ -531,6 +531,61 @@ class FlipTix:
 
 
 
+    ## @fn verify_forgot_password_code :
+    #
+    def verify_forgot_password_code(self, email='', verificationCode='', userId='', 
+                    emailExclude=False, verificationCodeExclude=False, userIdExclude=False):
+        
+        url = self.environment + data["VerifyForgotPassword"]
+        
+        headers = {
+            'Content-Type' : 'application/json',
+            'Cache-Control': 'no-cache'
+        }
+        
+        body = {}
+            
+        if emailExclude == True:
+            pass
+        elif email != '':
+            body['email'] = email
+        else:
+            body['email'] = ''
+
+        if verificationCodeExclude == True:
+            pass
+        elif verificationCode != '':
+            body['verificationCode'] = verificationCode
+        else:
+            body['verificationCode'] = ''
+
+        if userIdExclude == True:
+            pass
+        elif userId != '':
+            body['userId'] = userId
+        else:
+            body['userId'] = ''
+            
+        response = requests.request('POST', url, json=body, headers=headers, verify=False)
+    
+        responseBody = response.json()
+        
+        if TestOutput == True:
+            print('\nverify_forgot_password_code\n', responseBody)
+            print('\nresponse.status_code: ', response.status_code)
+        
+        # Grab the request Id of a successful call.
+        if 'result' in responseBody.keys():
+            if responseBody['result'] == "Your email has been verified! Please log in":
+                self.SessionToken = responseBody['sessionToken']
+                self.UserId = responseBody['userId']
+        
+        return responseBody
+
+
+
+
+
     def GetSessionToken(self):
         return self.SessionToken
 
@@ -608,5 +663,11 @@ def testClass():
     # #                    newPasswordExclude=False):
     # user.change_password(user.GetUserId(), 'NewPassword')
 
+
+
+    # Method signature. DONE
+    # def verify_forgot_password_code(self, email='', verificationCode='', userId='', 
+    #                emailExclude=False, verificationCodeExclude=False, userIdExclude=False):
+    user.verify_forgot_password_code(data['testVerifiedEmail'], '123456', user.GetUserId())
 
 # testClass()

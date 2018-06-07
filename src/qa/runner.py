@@ -8,6 +8,7 @@ from test import testGetUserById
 from test import testVerifyUser
 from test import testSendForgotPassword
 from test import testChangePassword
+from test import testVerifyForgotPasswordCode
 
 # Initialize a test loader & test suite package.
 loader = unittest.TestLoader()
@@ -20,7 +21,8 @@ suite  = unittest.TestSuite()
 # suite.addTests(loader.suiteClass(testGetUserById.suite()))
 # suite.addTests(loader.suiteClass(testVerifyUser.suite()))
 # suite.addTests(loader.suiteClass(testSendForgotPassword.suite()))
-suite.addTests(loader.suiteClass(testChangePassword.suite()))
+# suite.addTests(loader.suiteClass(testChangePassword.suite()))
+suite.addTests(loader.suiteClass(testVerifyForgotPasswordCode.suite()))
 
 # Initialize an xml runner.
 testRunner=xmlrunner.XMLTestRunner(output='data/testReports', verbosity=2)
