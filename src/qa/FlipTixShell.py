@@ -136,8 +136,8 @@ class FlipTix:
         # Grab the request Id of a successful call.
         if 'result' in responseBody.keys():
             if responseBody['result'] == "User has been created successfully. Please check your email for your verification code":
-                pass
-                # self.requestId = responseBody['requestId']
+                self.loginCookie = response.cookies.get_dict()
+                self.UserId = responseBody['userId']
         
         return responseBody
 
@@ -354,7 +354,7 @@ class FlipTix:
 
     ## @fn get_user_by_id : pull up user data with their id.
     #
-    def get_user_by_id(self, userId='', userIdExclude=False):
+    def get_user_by_id(self, userId='', cookies={}, userIdExclude=False):
         
         url = self.environment + data["GetUserById"] + userId
 
@@ -363,7 +363,10 @@ class FlipTix:
             'Cache-Control': 'no-cache'
         }
             
-        response = requests.request('GET', url, json={}, headers=headers, verify=False)
+        print('\nheaders:', headers)
+        print('\nurl:', url)
+
+        response = requests.request('GET', url, json={}, headers=headers, cookies=cookies)
     
         responseBody = response.json()
         
@@ -602,13 +605,13 @@ def testClass():
     user = FlipTix()
 
 
-    # # Method signature. DONE
-    # # def register_user(self, verifyBy='', email='', phone='', firstName='',
-    # #             lastName='', password='', verifyByExclude=False,
-    # #             emailExclude=False, phoneExclude=False, firstNameExclude=False,
-    # #             lastNameExclude=False, passwordExclude=False):
-    # user.register_user(data['testVerifyBy'], data['testEmail'], data['testPhone'],
-    #                    data['testFirstName'], data['testLastName'], data['testPassword'])
+    # Method signature. DONE
+    # def register_user(self, verifyBy='', email='', phone='', firstName='',
+    #             lastName='', password='', verifyByExclude=False,
+    #             emailExclude=False, phoneExclude=False, firstNameExclude=False,
+    #             lastNameExclude=False, passwordExclude=False):
+    user.register_user(data['testVerifyBy'], data['testEmail'], data['testPhone'],
+                       data['testFirstName'], data['testLastName'], data['testPassword'])
 
 
     # # Method signature. DONE
@@ -623,9 +626,9 @@ def testClass():
     # user.resend_code(data['testVerifyBy'], data['testEmail'])
 
 
-    # Method signature. DONE
-    # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
-    user.login(data['testVerifiedEmail'], data['testPassword'])
+    # # Method signature. DONE
+    # # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
+    # user.login(data['testVerifiedEmail'], data['testPassword'])
 
 
     # # Method signature. DONE
@@ -638,9 +641,9 @@ def testClass():
     # user.login_check(user.GetSessionToken(), user.GetCookies())
 
 
-    # # Method signature. DONE
-    # # def get_user_by_id(self, userId=''):
-    # user.get_user_by_id(user.GetUserId())
+    # Method signature. DONE
+    # def get_user_by_id(self, userId='', cookies={}, userIdExclude=False):
+    user.get_user_by_id(user.GetUserId(), user.GetCookies())
 
 
     # NEED FURTHER DIRECTION FRMO NOEL HERE ``````````````````````````````````````````````
@@ -665,9 +668,9 @@ def testClass():
 
 
 
-    # Method signature. DONE
-    # def verify_forgot_password_code(self, email='', verificationCode='', userId='', 
-    #                emailExclude=False, verificationCodeExclude=False, userIdExclude=False):
-    user.verify_forgot_password_code(data['testVerifiedEmail'], '123456', user.GetUserId())
+    # # Method signature. DONE
+    # # def verify_forgot_password_code(self, email='', verificationCode='', userId='', 
+    # #                emailExclude=False, verificationCodeExclude=False, userIdExclude=False):
+    # user.verify_forgot_password_code(data['testVerifiedEmail'], '123456', user.GetUserId())
 
-# testClass()
+testClass()
