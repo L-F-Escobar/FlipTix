@@ -605,13 +605,13 @@ def testClass():
     user = FlipTix()
 
 
-    # Method signature. DONE
-    # def register_user(self, verifyBy='', email='', phone='', firstName='',
-    #             lastName='', password='', verifyByExclude=False,
-    #             emailExclude=False, phoneExclude=False, firstNameExclude=False,
-    #             lastNameExclude=False, passwordExclude=False):
-    user.register_user(data['testVerifyBy'], data['testEmail'], data['testPhone'],
-                       data['testFirstName'], data['testLastName'], data['testPassword'])
+    # # Method signature. DONE
+    # # def register_user(self, verifyBy='', email='', phone='', firstName='',
+    # #             lastName='', password='', verifyByExclude=False,
+    # #             emailExclude=False, phoneExclude=False, firstNameExclude=False,
+    # #             lastNameExclude=False, passwordExclude=False):
+    # user.register_user(data['testVerifyBy'], data['testEmail'], data['testPhone'],
+    #                    data['testFirstName'], data['testLastName'], data['testPassword'])
 
 
     # # Method signature. DONE
@@ -626,14 +626,19 @@ def testClass():
     # user.resend_code(data['testVerifyBy'], data['testEmail'])
 
 
-    # # Method signature. DONE
-    # # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
-    # user.login(data['testVerifiedEmail'], data['testPassword'])
+    # Method signature. DONE
+    # def login(self, email='', password='', emailExclude=False, passwordExclude=False):
+    user.login(data['testVerifiedEmail'], data['testPassword'])
 
 
     # # Method signature. DONE
     # # def logout(self, Authorization='', AuthorizationExclude=False):
     # user.logout(user.GetSessionToken())
+    # user.logout(123)
+    # user.logout('fuck my life')
+    # user.logout(12.231)
+    # user.logout('')
+    # user.logout(AuthorizationExclude=True)
 
 
     # # Method signature. DONE
@@ -641,9 +646,9 @@ def testClass():
     # user.login_check(user.GetSessionToken(), user.GetCookies())
 
 
-    # Method signature. DONE
-    # def get_user_by_id(self, userId='', cookies={}, userIdExclude=False):
-    user.get_user_by_id(user.GetUserId(), user.GetCookies())
+    # # Method signature. DONE
+    # # def get_user_by_id(self, userId='', cookies={}, userIdExclude=False):
+    # user.get_user_by_id(user.GetUserId(), user.GetCookies())
 
 
     # NEED FURTHER DIRECTION FRMO NOEL HERE ``````````````````````````````````````````````
@@ -665,6 +670,7 @@ def testClass():
     # # def change_password(self, userId='', newPassword='', userIdExclude=False,
     # #                    newPasswordExclude=False):
     # user.change_password(user.GetUserId(), 'NewPassword')
+    # user.change_password(user.GetUserId(), data['testPassword'])
 
 
 
@@ -673,4 +679,4 @@ def testClass():
     # #                emailExclude=False, verificationCodeExclude=False, userIdExclude=False):
     # user.verify_forgot_password_code(data['testVerifiedEmail'], '123456', user.GetUserId())
 
-testClass()
+# testClass()

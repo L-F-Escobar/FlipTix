@@ -71,7 +71,6 @@ class TestResendCode(unittest.TestCase):
         
     # Missing VerifyBy information from request call.
     def test_missingVerifyBy(self):
-        # Missing VerifyBy value.
         responseBody = self.user.resend_code(verifyBy = FlipTixShell.data['testVerifyBy'],
                                              email = FlipTixShell.data['testEmail'],
                                              verifyByExclude = True)
@@ -83,7 +82,6 @@ class TestResendCode(unittest.TestCase):
         
     # Test a null VerifyBy.
     def test_nullVerifyBy(self):
-        # Null VerifyBy value.
         responseBody = self.user.resend_code(verifyBy = '',
                                              email = FlipTixShell.data['testEmail'])
 
@@ -94,7 +92,6 @@ class TestResendCode(unittest.TestCase):
 
     # Test a int VerifyBy.
     def test_intVerifyBy(self):
-        # Int VerifyBy value.
         responseBody = self.user.resend_code(verifyBy = 123456,
                                              email = FlipTixShell.data['testEmail'])
 
@@ -105,7 +102,6 @@ class TestResendCode(unittest.TestCase):
 
     # Test a float VerifyBy.
     def test_floatVerifyBy(self):
-        # Float VerifyBy value.
         responseBody = self.user.resend_code(verifyBy = 1234.56,
                                              email = FlipTixShell.data['testEmail'])
 
@@ -116,7 +112,6 @@ class TestResendCode(unittest.TestCase):
         
     # Test a string VerifyBy value call.
     def test_stringVerifyBy(self):
-        # String VerifyBy value.
         responseBody = self.user.resend_code(verifyBy = "This should not work",
                                              email = FlipTixShell.data['testEmail'])
 
@@ -127,7 +122,6 @@ class TestResendCode(unittest.TestCase):
 
     # Test an array VerifyBy value call.
     def test_arrayVerifyBy(self):
-        # Array VerifyBy value.
         responseBody = self.user.resend_code(verifyBy = ["This should not work", 123, 1.2],
                                              email = FlipTixShell.data['testEmail'])
 
@@ -145,7 +139,6 @@ class TestResendCode(unittest.TestCase):
         
     # Missing Email information from request call.
     def test_missingEmail(self):
-        # Missing Email value.
         responseBody = self.user.resend_code(verifyBy = FlipTixShell.data['testVerifyBy'],
                                              email = FlipTixShell.data['testEmail'],
                                              emailExclude = True)
@@ -157,7 +150,6 @@ class TestResendCode(unittest.TestCase):
         
     # Test a null Email.
     def test_nullEmail(self):
-        # Null Email value.
         responseBody = self.user.resend_code(verifyBy = FlipTixShell.data['testVerifyBy'],
                                              email = '')
 
@@ -167,49 +159,47 @@ class TestResendCode(unittest.TestCase):
 
 
     # Test a int Email.
-    @unittest.skip("Email parameter can be any integar value - (BUG)")
+    # @unittest.skip("Email parameter can be any integar value - (BUG)")
     def test_intEmail(self):
-        # Int Email value.
         responseBody = self.user.resend_code(verifyBy = FlipTixShell.data['testVerifyBy'],
-                                             email = 1)
+                                             email = 513516813158)
 
-        self.assertEqual(responseBody['error'], "",
+        self.assertEqual(responseBody['error'], "User was not found",
                           msg='test_intEmail assert#1 has failed.')
 
 
 
     # Test a float Email.
-    @unittest.skip("Email parameter can be any float value - (BUG)")
     def test_floatEmail(self):
         # Float Email value.
         responseBody = self.user.resend_code(verifyBy = FlipTixShell.data['testVerifyBy'],
                                              email = 1.1)
 
-        self.assertEqual(responseBody['error'], "",
+        self.assertEqual(responseBody['error'], "User was not found",
                           msg='test_floatEmail assert#1 has failed.')
         
         
         
     # Test a string Email value call.
-    @unittest.skip("Email parameter can be any string value - (BUG)")
+    # @unittest.skip("Email parameter can be any string value - (BUG)")
     def test_stringEmail(self):
         # String Email value.
         responseBody = self.user.resend_code(verifyBy = FlipTixShell.data['testVerifyBy'],
                                              email = "This is not a valid email format!")
 
-        self.assertEqual(responseBody['error'], "",
+        self.assertEqual(responseBody['error'], "User was not found",
                           msg='test_stringEmail assert#1 has failed.')
 
 
 
     # Test an array Email value call.
-    @unittest.skip("Email parameter can be any string value - (BUG)")
+    # @unittest.skip("Email parameter can be any string value - (BUG)")
     def test_arrayEmail(self):
         # Array Email value.
         responseBody = self.user.resend_code(verifyBy = FlipTixShell.data['testVerifyBy'],
                                              email = "Email formats are not encased in arrays.")
 
-        self.assertEqual(responseBody['error'], "",
+        self.assertEqual(responseBody['error'], "User was not found",
                           msg='test_arrayEmail assert#1 has failed.')
 
 

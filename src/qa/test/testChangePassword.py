@@ -47,7 +47,8 @@ class TestSendForgotPassword(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         try:
-            pass
+            cls.user.change_password(userId = cls.user.GetUserId(), 
+                                     newPassword = FlipTixShell.data['testPassword'])
         except:
             print("Unexpected error during tearDownClass:", sys.exc_info()[0])
     
@@ -213,13 +214,13 @@ class TestSendForgotPassword(unittest.TestCase):
         
         
     # Test a string NewPassword value call.
-    @unittest.skip("No need for this test - any string will pass")
     def test_stringNewPassword(self):
         # String NewPassword value.
         responseBody = self.user.change_password(userId = self.user.GetUserId(), 
                                                  newPassword = "Any string will pass")
 
-        self.assertEqual(responseBody['error'], "",
+        self.assertEqual(responseBody['result'], 
+                         "Your password has been changed! Please log in.",
                           msg='test_stringNewPassword assert#1 has failed.')
 
 

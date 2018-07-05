@@ -227,7 +227,7 @@ class TestRegisterUser(unittest.TestCase):
     def test_intEmail(self):
         # Int Email value.
         responseBody = self.user.register_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                               email = 65874231, 
+                                               email = 123546, 
                                                phone = FlipTixShell.data['testPhone'], 
                                                firstName = FlipTixShell.data['testFirstName'], 
                                                lastName = FlipTixShell.data['testLastName'], 

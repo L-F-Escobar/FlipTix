@@ -14,14 +14,14 @@ from test import testVerifyForgotPasswordCode
 loader = unittest.TestLoader()
 suite  = unittest.TestSuite()
 
-# suite.addTests(loader.suiteClass(testRegisterUser.suite()))
+# suite.addTests(loader.suiteClass(testRegisterUser.suite()))         
 # suite.addTests(loader.suiteClass(testResendCode.suite()))
 # suite.addTests(loader.suiteClass(testLogin.suite()))
 # suite.addTests(loader.suiteClass(testLogoutLoginCheck.suite()))
 # suite.addTests(loader.suiteClass(testGetUserById.suite()))
 # suite.addTests(loader.suiteClass(testVerifyUser.suite()))
 # suite.addTests(loader.suiteClass(testSendForgotPassword.suite()))
-# suite.addTests(loader.suiteClass(testChangePassword.suite()))
+# suite.addTests(loader.suiteClass(testChangePassword.suite()))               
 suite.addTests(loader.suiteClass(testVerifyForgotPasswordCode.suite()))
 
 # Initialize an xml runner.

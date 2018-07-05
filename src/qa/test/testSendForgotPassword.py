@@ -82,45 +82,45 @@ class TestSendForgotPassword(unittest.TestCase):
 
 
     # Test a int Email.
-    @unittest.skip("Email parameter can be any integar value - (BUG)")
+    # @unittest.skip("Email parameter can be any integar value - (BUG)")
     def test_intEmail(self):
         # Int Email value.
-        responseBody = self.user.send_forgot_password(email = 1)
+        responseBody = self.user.send_forgot_password(email = 12222222222222222)
 
-        self.assertEqual(responseBody['error'], "",
+        self.assertEqual(responseBody['error'], "user could not be found",
                           msg='test_intEmail assert#1 has failed.')
 
 
 
     # Test a float Email.
-    @unittest.skip("Email parameter can be any float value - (BUG)")
+    # @unittest.skip("Email parameter can be any float value - (BUG)")
     def test_floatEmail(self):
         # Float Email value.
         responseBody = self.user.send_forgot_password(email = 1.2)
 
-        self.assertEqual(responseBody['error'], "",
+        self.assertEqual(responseBody['error'], "user could not be found",
                           msg='test_floatEmail assert#1 has failed.')
         
         
         
     # Test a string Email value call.
-    @unittest.skip("Email parameter can be any string value - (BUG)")
+    # @unittest.skip("Email parameter can be any string value - (BUG)")
     def test_stringEmail(self):
         # String Email value.
         responseBody = self.user.send_forgot_password(email = 'This is not proper email format.')
 
-        self.assertEqual(responseBody['error'], "",
+        self.assertEqual(responseBody['error'], "user could not be found",
                           msg='test_stringEmail assert#1 has failed.')
 
 
 
     # Test an array Email value call.
-    @unittest.skip("Email parameter can be any string value - (BUG)")
+    # @unittest.skip("Email parameter can be any string value - (BUG)")
     def test_arrayEmail(self):
         # Array Email value.
         responseBody = self.user.send_forgot_password(email = ['Invalid email format'])
 
-        self.assertEqual(responseBody['error'], "",
+        self.assertEqual(responseBody['error'], "user could not be found",
                           msg='test_arrayEmail assert#1 has failed.')
 
 

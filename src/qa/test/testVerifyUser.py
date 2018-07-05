@@ -22,6 +22,8 @@ import sys, unittest, FlipTixShell
         verificationCode
 
     Test cases
+        Verify a user that has already been verified.
+
         VerifyBy missing from request call.
         Null VerifyBy value. 
         Int VerifyBy value.    
@@ -59,6 +61,19 @@ class TestVerifyUser(unittest.TestCase):
             pass
         except:
             print("Unexpected error during tearDownClass:", sys.exc_info()[0])
+
+
+
+
+    # Missing VerifyBy information from request call.
+    def test_doubleVerify(self):
+        # Missing VerifyBy value.
+        responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
+                                             email = FlipTixShell.data['testVerifiedEmail'], 
+                                             verificationCode = FlipTixShell.data['testVerificationCode'])
+
+        self.assertEqual(responseBody['error'], 'Your code has expired. Please request another verification code',
+                         msg='test_missingVerifyBy assert#1 has failed.')
 
 
 
@@ -175,20 +190,20 @@ class TestVerifyUser(unittest.TestCase):
 
 
     # Test a int Email.
-    @unittest.skip("Unable to test int email value because error msg defaults to verification code")
+    # @unittest.skip("Unable to test int email value because error msg defaults to verification code")
     def test_intEmail(self):
         # Int Email value.
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                             email = FlipTixShell.data['testEmail'], 
+                                             email = 6666666666666666666, 
                                              verificationCode = FlipTixShell.data['testVerificationCode'])
 
-        self.assertEqual(responseBody['message'], "Expected params.Email to be a string",
+        self.assertEqual(responseBody['error'], "User was not found",
                           msg='test_intEmail assert#1 has failed.')
 
 
 
     # Test a float Email.
-    @unittest.skip("Unable to test float email value because error msg defaults to verification code")
+    # @unittest.skip("Unable to test float email value because error msg defaults to verification code")
     def test_floatEmail(self):
         # Float Email value.
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
@@ -259,7 +274,7 @@ class TestVerifyUser(unittest.TestCase):
     def test_intVerificationCode(self):
         # Int VerificationCode value.
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                             email = FlipTixShell.data['testEmail'], 
+                                             email = FlipTixShell.data['testVerifiedEmail'], 
                                              verificationCode = 111)
 
         self.assertEqual(responseBody['error'], "Your code has expired. Please request another verification code",
@@ -268,40 +283,40 @@ class TestVerifyUser(unittest.TestCase):
 
 
     # Test a float VerificationCode.
-    @unittest.skip("VerificationCode parameter can be any float value - (BUG)")
+    # @unittest.skip("VerificationCode parameter can be any float value - (BUG)")
     def test_floatVerificationCode(self):
         # Float VerificationCode value.
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
                                              email = FlipTixShell.data['testEmail'], 
                                              verificationCode = 1.1)
 
-        self.assertEqual(responseBody['error'], "Your code has expired. Please request another verification code",
+        self.assertEqual(responseBody['error'], "User was not found",
                           msg='test_floatVerificationCode assert#1 has failed.')
         
         
         
     # Test a string VerificationCode value call.
-    @unittest.skip("VerificationCode parameter can be any string value - (BUG)")
+    # @unittest.skip("VerificationCode parameter can be any string value - (BUG)")
     def test_stringVerificationCode(self):
         # String VerificationCode value.
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
                                              email = FlipTixShell.data['testEmail'], 
                                              verificationCode = 'Anything will not do.')
 
-        self.assertEqual(responseBody['error'], "Your code has expired. Please request another verification code",
+        self.assertEqual(responseBody['error'], "User was not found",
                           msg='test_stringVerificationCode assert#1 has failed.')
 
 
 
     # Test an array VerificationCode value call.
-    @unittest.skip("VerificationCode parameter can be any array value - (BUG)")
+    # @unittest.skip("VerificationCode parameter can be any array value - (BUG)")
     def test_arrayVerificationCode(self):
         # Array VerificationCode value.
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
                                              email = FlipTixShell.data['testEmail'], 
                                              verificationCode = ['test'])
 
-        self.assertEqual(responseBody['error'], "Your code has expired. Please request another verification code",
+        self.assertEqual(responseBody['error'], "User was not found",
                           msg='test_arrayVerificationCode assert#1 has failed.')
     
     
@@ -311,6 +326,8 @@ class TestVerifyUser(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
+
+    suite.addTest(TestVerifyUser('test_doubleVerify'))
 
     suite.addTest(TestVerifyUser('test_missingVerifyBy'))
     suite.addTest(TestVerifyUser('test_nullVerifyBy'))
