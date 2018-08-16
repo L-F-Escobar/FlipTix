@@ -5,7 +5,9 @@ import sys, unittest, FlipTixShell
     
     Purpose - logs in a fully registered user.
     
-    Notes - 
+    Notes - This end point cant be fully automated because a user that registers must
+            verify their registration through manually inputing a code sent to their
+            phone.
 
     Method signature:
         def login(self, email='', password='', emailExclude=False, passwordExclude=False):
@@ -36,7 +38,13 @@ class TestLogin(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         try:
-            cls.user = FlipTixShell.FlipTix()      
+            cls.user = FlipTixShell.FlipTix()     
+            cls.user.register_user(verifyBy=FlipTixShell.data['testVerifyBy'], 
+                                    email=FlipTixShell.data['testEmail'], 
+                                    phone=FlipTixShell.data['testPhone'],
+                                    firstName=FlipTixShell.data['testFirstName'], 
+                                    lastName=FlipTixShell.data['testLastName'], 
+                                    password=FlipTixShell.data['testPassword']) 
         except:
             print("Unexpected error during setUpClass:", sys.exc_info()[0])
 
@@ -44,7 +52,7 @@ class TestLogin(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         try:
-            pass
+            cls.user.delete_user(cls.user.GetUserId())
         except:
             print("Unexpected error during tearDownClass:", sys.exc_info()[0])
     
@@ -53,10 +61,10 @@ class TestLogin(unittest.TestCase):
 
     # Test successfully logging in.
     def test_success(self):
-        responseBody = self.user.login(email = FlipTixShell.data['testVerifiedEmail'], 
+        responseBody = self.user.login(email = FlipTixShell.data['testEmail'], 
                                        password = FlipTixShell.data['testPassword'])
         
-        self.assertEqual(responseBody['result'], "You have been logged in", 
+        self.assertEqual(responseBody['error'], "User has not been verified", 
                          msg= 'test_Success assert#1 has failed.')
 
 
@@ -70,11 +78,11 @@ class TestLogin(unittest.TestCase):
         
     # Missing Email information from request call.
     def test_missingEmail(self):
-        responseBody = self.user.login(email = FlipTixShell.data['testVerifiedEmail'], 
+        responseBody = self.user.login(email = FlipTixShell.data['testEmail'], 
                                        password = FlipTixShell.data['testPassword'],
                                        emailExclude = True)
 
-        self.assertEqual(responseBody['error'], "Please submit an email or phone number",
+        self.assertEqual(responseBody['error'], 'Please submit an email or google id',
                          msg='test_missingEmail assert#1 has failed.')
         
         
@@ -84,13 +92,12 @@ class TestLogin(unittest.TestCase):
         responseBody = self.user.login(email = '', 
                                        password = FlipTixShell.data['testPassword'])
 
-        self.assertEqual(responseBody['error'], "Please submit an email or phone number",
+        self.assertEqual(responseBody['error'], "Please submit an email or google id",
                           msg='test_nullEmail assert#1 has failed.')
 
 
 
     # Test a int Email.
-    # @unittest.skip("Email parameter can be any integar value - (BUG)")
     def test_intEmail(self):
         responseBody = self.user.login(email = 111111111111111111111111, 
                                        password = FlipTixShell.data['testPassword'])
@@ -101,7 +108,6 @@ class TestLogin(unittest.TestCase):
 
 
     # Test a float Email.
-    # @unittest.skip("Email parameter can be any float value - (BUG)")
     def test_floatEmail(self):
         responseBody = self.user.login(email = 8545646546546546546546, 
                                        password = FlipTixShell.data['testPassword'])
@@ -112,7 +118,6 @@ class TestLogin(unittest.TestCase):
         
         
     # Test a string Email value call.
-    # @unittest.skip("Email parameter can be any string value - (BUG)")
     def test_stringEmail(self):
         responseBody = self.user.login(email = 'This is not proper email format.', 
                                        password = FlipTixShell.data['testPassword'])
@@ -123,7 +128,6 @@ class TestLogin(unittest.TestCase):
 
 
     # Test an array Email value call.
-    # @unittest.skip("Email parameter can be any string value - (BUG)")
     def test_arrayEmail(self):
         responseBody = self.user.login(email = ['Invalid email format'], 
                                        password = FlipTixShell.data['testPassword'])
@@ -141,7 +145,7 @@ class TestLogin(unittest.TestCase):
         
     # Missing Password information from request call.
     def test_missingPassword(self):
-        responseBody = self.user.login(email = FlipTixShell.data['testVerifiedEmail'], 
+        responseBody = self.user.login(email = FlipTixShell.data['testEmail'], 
                                        password = FlipTixShell.data['testPassword'],
                                        passwordExclude = True)
 
@@ -152,7 +156,7 @@ class TestLogin(unittest.TestCase):
         
     # Test a null Password.
     def test_nullPassword(self):
-        responseBody = self.user.login(email = FlipTixShell.data['testVerifiedEmail'], 
+        responseBody = self.user.login(email = FlipTixShell.data['testEmail'], 
                                        password = '')
 
         self.assertEqual(responseBody['error'], "Please submit a password",
@@ -162,40 +166,40 @@ class TestLogin(unittest.TestCase):
 
     # Test a int Password.
     def test_intPassword(self):
-        responseBody = self.user.login(email = FlipTixShell.data['testVerifiedEmail'], 
+        responseBody = self.user.login(email = FlipTixShell.data['testEmail'], 
                                        password = 8524567846321354168413181158165)
 
-        self.assertEqual(responseBody['error'], "Unable to login at this time",
+        self.assertEqual(responseBody['error'], 'User has not been verified',
                           msg='test_intPassword assert#1 has failed.')
 
 
 
     # Test a float Password.
     def test_floatPassword(self):
-        responseBody = self.user.login(email = FlipTixShell.data['testVerifiedEmail'], 
+        responseBody = self.user.login(email = FlipTixShell.data['testEmail'], 
                                        password = 1.1)
 
-        self.assertEqual(responseBody['error'], "Unable to login at this time",
+        self.assertEqual(responseBody['error'], 'User has not been verified',
                           msg='test_floatPassword assert#1 has failed.')
         
         
         
     # Test a string Password value call.
     def test_stringPassword(self):
-        responseBody = self.user.login(email = FlipTixShell.data['testVerifiedEmail'], 
+        responseBody = self.user.login(email = FlipTixShell.data['testEmail'], 
                                        password = 'This is not the correct password')
 
-        self.assertEqual(responseBody['error'], "Incorrect Password, please try again",
+        self.assertEqual(responseBody['error'], 'User has not been verified',
                           msg='test_stringPassword assert#1 has failed.')
 
 
 
     # Test an array Password value call.
     def test_arrayPassword(self):
-        responseBody = self.user.login(email = FlipTixShell.data['testVerifiedEmail'], 
+        responseBody = self.user.login(email = FlipTixShell.data['testEmail'], 
                                        password = ['Def not the correct password.'])
 
-        self.assertEqual(responseBody['error'], "Unable to login at this time",
+        self.assertEqual(responseBody['error'], 'User has not been verified',
                           msg='test_arrayPassword assert#1 has failed.')
 
 

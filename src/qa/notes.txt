@@ -3,15 +3,22 @@ FlipTix end point notes
 Register user end point
     - Only partial automation possible. 
     - Email parameter can be any integar, float, string, or array value.
-    - Phone parameter can be excluded from a request call, 
+    - Phone parameter can be any integar, float, string, or array value.
     - First name can be any int, float, or array value.
     - Last name can be any int, float, or array value.
 
 Resend code end point   
     - Email parameter can be any integar, float, string, or array value.
+    - VerifyBy parameter can be excluded from a call & can be any null,   int, float, string, or array value. 
 
 Login end point 
     - Email parameter can be any integar, float, string, or array value.
+
+Verify User end point
+    - VerifyBy parameter can be excluded from a call, be any null, int, float, string, or array value.
+
+Login Check end point
+    - Will trigger an invalid token every single time the endpoint is hit.
 
 Log out end point   
     - If a user logs in and them logs out, that user will be able to successfully execute
@@ -21,5 +28,5 @@ Log out end point
 Send Forgot Password end point  
     - Email parameter can be any integar, float, string, or array value.
 
-Change Pssword end point
-    - 
+Verify Forgot Password Code end point
+    - Email parameter can be exlucded from the call, be any null, int, float, string, or array value.

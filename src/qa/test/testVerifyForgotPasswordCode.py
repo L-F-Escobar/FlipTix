@@ -43,10 +43,23 @@ class TestVerifyUser(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         try:
-            cls.user = FlipTixShell.FlipTix()    
+            cls.user = FlipTixShell.FlipTix()     
 
-            cls.user.login(email = FlipTixShell.data['testVerifiedEmail'], 
-                           password = FlipTixShell.data['testPassword'])  
+            cls.user.register_user(verifyBy=FlipTixShell.data['testVerifyBy'], 
+                                    email=FlipTixShell.data['testEmail'], 
+                                    phone=FlipTixShell.data['testPhone'],
+                                    firstName=FlipTixShell.data['testFirstName'], 
+                                    lastName=FlipTixShell.data['testLastName'], 
+                                    password=FlipTixShell.data['testPassword']) 
+
+            cls.user.resend_code(verifyBy = FlipTixShell.data['testVerifyBy'],
+                                 phone = FlipTixShell.data['testPhone'])
+
+            cls.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
+                                 phone = FlipTixShell.data['testPhone'], 
+                                 verificationCode = cls.user.GetResendCode()) 
+
+            cls.user.send_forgot_password(email = FlipTixShell.data['testEmail'])
         except:
             print("Unexpected error during setUpClass:", sys.exc_info()[0])
 
@@ -54,7 +67,7 @@ class TestVerifyUser(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         try:
-            pass
+            cls.user.delete_user(cls.user.GetUserId())
         except:
             print("Unexpected error during tearDownClass:", sys.exc_info()[0])
 
@@ -69,8 +82,8 @@ class TestVerifyUser(unittest.TestCase):
         
     # Missing UserId information from request call.
     def test_missingUserId(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
-                                                             verificationCode = FlipTixShell.data['testVerificationCode'], 
+        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testEmail'], 
+                                                             verificationCode = self.user.GetResendCode(), 
                                                              userId = self.user.GetUserId(),
                                                              userIdExclude = True)
 
@@ -81,8 +94,8 @@ class TestVerifyUser(unittest.TestCase):
         
     # Test a null UserId.
     def test_nullUserId(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
-                                                             verificationCode = FlipTixShell.data['testVerificationCode'], 
+        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testEmail'], 
+                                                             verificationCode = self.user.GetResendCode(), 
                                                              userId = '')
 
         self.assertEqual(responseBody['error'], "Please submit a userId",
@@ -92,8 +105,8 @@ class TestVerifyUser(unittest.TestCase):
 
     # Test a int UserId.
     def test_intUserId(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
-                                                             verificationCode = FlipTixShell.data['testVerificationCode'], 
+        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testEmail'], 
+                                                             verificationCode = self.user.GetResendCode(), 
                                                              userId = 123456)
 
         self.assertEqual(responseBody['error'], "User could not be found",
@@ -103,8 +116,8 @@ class TestVerifyUser(unittest.TestCase):
 
     # Test a float UserId.
     def test_floatUserId(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
-                                                             verificationCode = FlipTixShell.data['testVerificationCode'], 
+        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testEmail'], 
+                                                             verificationCode = self.user.GetResendCode(), 
                                                              userId = 123.456)
 
         self.assertEqual(responseBody['error'], "User could not be found",
@@ -113,25 +126,23 @@ class TestVerifyUser(unittest.TestCase):
         
         
     # Test a string UserId value call.
-    @unittest.skip('Cannot automate this due to the fact that the verificationCode will always be wrong.')
     def test_stringUserId(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
-                                                             verificationCode = FlipTixShell.data['testVerificationCode'], 
+        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testEmail'], 
+                                                             verificationCode = self.user.GetResendCode(), 
                                                              userId = 'self.user.GetUserId()')
 
-        self.assertEqual(responseBody[''], "",
+        self.assertEqual(responseBody['error'], "Could not verify password code",
                           msg='test_stringUserId assert#1 has failed.')
 
 
 
     # Test an array UserId value call.
-    @unittest.skip('Cannot automate this due to the fact that the verificationCode will always be wrong.')
     def test_arrayUserId(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
-                                                             verificationCode = FlipTixShell.data['testVerificationCode'], 
+        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testEmail'], 
+                                                             verificationCode = self.user.GetResendCode(), 
                                                              userId = [self.user.GetUserId()])
 
-        self.assertEqual(responseBody[''], "",
+        self.assertEqual(responseBody['error'], "Could not verify password code",
                           msg='test_arrayUserId assert#1 has failed.')
 
 
@@ -144,22 +155,21 @@ class TestVerifyUser(unittest.TestCase):
     
         
     # Missing Email information from request call.
-    @unittest.skip('Cannot automate this due to the fact that the verificationCode will always be wrong.')
     def test_missingEmail(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
-                                                             verificationCode = FlipTixShell.data['testVerificationCode'], 
-                                                             userId = self.user.GetUserId())
+        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testEmail'], 
+                                                             verificationCode = self.user.GetResendCode(), 
+                                                             userId = self.user.GetUserId(),
+                                                             emailExclude = True)
 
-        self.assertEqual(responseBody[''], "",
+        self.assertEqual(responseBody['error'], "Please submit an email",
                          msg='test_missingEmail assert#1 has failed.')
         
         
         
     # Test a null Email.
-    @unittest.skip('Cannot automate this due to the fact that the verificationCode will always be wrong.')
     def test_nullEmail(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
-                                                             verificationCode = FlipTixShell.data['testVerificationCode'],  
+        responseBody = self.user.verify_forgot_password_code(email = '', 
+                                                             verificationCode = self.user.GetResendCode(),  
                                                              userId = self.user.GetUserId())
 
         self.assertEqual(responseBody['error'], "Please submit an email",
@@ -168,10 +178,9 @@ class TestVerifyUser(unittest.TestCase):
 
 
     # Test a int Email.
-    @unittest.skip('Cannot automate this due to the fact that the verificationCode will always be wrong.')
     def test_intEmail(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
-                                                             verificationCode = FlipTixShell.data['testVerificationCode'],  
+        responseBody = self.user.verify_forgot_password_code(email = 12, 
+                                                             verificationCode = self.user.GetResendCode(),  
                                                              userId = self.user.GetUserId())
 
         self.assertEqual(responseBody['message'], "Expected params.Email to be a string",
@@ -180,10 +189,9 @@ class TestVerifyUser(unittest.TestCase):
 
 
     # Test a float Email.
-    @unittest.skip('Cannot automate this due to the fact that the verificationCode will always be wrong.')
     def test_floatEmail(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
-                                                             verificationCode = FlipTixShell.data['testVerificationCode'], 
+        responseBody = self.user.verify_forgot_password_code(email = 1.2, 
+                                                             verificationCode = self.user.GetResendCode(), 
                                                              userId = self.user.GetUserId())
 
         self.assertEqual(responseBody['error'], "User was not found",
@@ -192,10 +200,9 @@ class TestVerifyUser(unittest.TestCase):
         
         
     # Test a string Email value call.
-    @unittest.skip('Cannot automate this due to the fact that the verificationCode will always be wrong.')
     def test_stringEmail(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
-                                                             verificationCode = FlipTixShell.data['testVerificationCode'], 
+        responseBody = self.user.verify_forgot_password_code(email = "FlipTixShell.data['testEmail']", 
+                                                             verificationCode = self.user.GetResendCode(), 
                                                              userId = self.user.GetUserId())
 
         self.assertEqual(responseBody['error'], "User was not found",
@@ -204,10 +211,9 @@ class TestVerifyUser(unittest.TestCase):
 
 
     # Test an array Email value call.
-    @unittest.skip('Cannot automate this due to the fact that the verificationCode will always be wrong.')
     def test_arrayEmail(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
-                                                             verificationCode = FlipTixShell.data['testVerificationCode'], 
+        responseBody = self.user.verify_forgot_password_code(email = [FlipTixShell.data['testEmail']], 
+                                                             verificationCode = self.user.GetResendCode(), 
                                                              userId = self.user.GetUserId())
 
         self.assertEqual(responseBody['error'], "User was not found",
@@ -223,8 +229,8 @@ class TestVerifyUser(unittest.TestCase):
         
     # Missing VerificationCode information from request call.
     def test_missingVerificationCode(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
-                                                             verificationCode = FlipTixShell.data['testVerificationCode'], 
+        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testEmail'], 
+                                                             verificationCode = self.user.GetResendCode(), 
                                                              userId = self.user.GetUserId(),
                                                              verificationCodeExclude = True)
 
@@ -235,7 +241,7 @@ class TestVerifyUser(unittest.TestCase):
         
     # Test a null VerificationCode.
     def test_nullVerificationCode(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
+        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testEmail'], 
                                                              verificationCode = '', 
                                                              userId = self.user.GetUserId())
 
@@ -246,44 +252,44 @@ class TestVerifyUser(unittest.TestCase):
 
     # Test a int VerificationCode.
     def test_intVerificationCode(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
+        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testEmail'], 
                                                              verificationCode = 123456789,  
                                                              userId = self.user.GetUserId())
 
-        self.assertEqual(responseBody['error'], "Your verification code has expired. Please submit request again.",
+        self.assertEqual(responseBody['error'], "Invalid verification code.",
                           msg='test_intVerificationCode assert#1 has failed.')
 
 
 
     # Test a float VerificationCode.
     def test_floatVerificationCode(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
+        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testEmail'], 
                                                              verificationCode = 123.456789, 
                                                              userId = self.user.GetUserId())
 
-        self.assertEqual(responseBody['error'], "Your verification code has expired. Please submit request again.",
+        self.assertEqual(responseBody['error'], "Invalid verification code.",
                           msg='test_floatVerificationCode assert#1 has failed.')
         
         
         
     # Test a string VerificationCode value call.
     def test_stringVerificationCode(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
-                                                             verificationCode = "FlipTixShell.data['testVerificationCode']", 
+        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testEmail'], 
+                                                             verificationCode = "self.user.GetResendCode()", 
                                                              userId = self.user.GetUserId())
 
-        self.assertEqual(responseBody['error'], "Your verification code has expired. Please submit request again.",
+        self.assertEqual(responseBody['error'], "Invalid verification code.",
                           msg='test_stringVerificationCode assert#1 has failed.')
 
 
 
     # Test an array VerificationCode value call.
     def test_arrayVerificationCode(self):
-        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testVerifiedEmail'], 
-                                                             verificationCode = [FlipTixShell.data['testVerificationCode']],  
+        responseBody = self.user.verify_forgot_password_code(email = FlipTixShell.data['testEmail'], 
+                                                             verificationCode = ['test'],  
                                                              userId = self.user.GetUserId())
 
-        self.assertEqual(responseBody['error'], "Your verification code has expired. Please submit request again.",
+        self.assertEqual(responseBody['error'], "Invalid verification code.",
                           msg='test_arrayVerificationCode assert#1 has failed.')
     
     

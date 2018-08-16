@@ -3,25 +3,21 @@ import sys, unittest, FlipTixShell
 '''
     FlipTix verify user end point.
     
-    Purpose - a user is email a verification code which is manually input 
-    
-    Notes - this endpoint can only be minimually automated due to the fact that is 
-            requires manual code input and an email can only be registered once and
-            not deleted.
-            This end point cannot we automated to be tested successfully, only 
-            unsucessful tests can be run.
+    Purpose - a user is texted a verification code which is manually input 
 
     Method signature:
-        def verify_user(self, verifyBy='', email='', verificationCode='', 
-                   verifyByExclude=False,  emailExclude=False,
-                   verificationCodeExclude=False):
+        def verify_user(self, verifyBy='', phone='', verificationCode='', 
+                    verifyByExclude=False,  phoneExclude=False,
+                    verificationCodeExclude=False):
     
     Required:
         verifyBy
-        email
+        phone
         verificationCode
 
     Test cases
+        Successfully verify a user.
+        
         Verify a user that has already been verified.
 
         VerifyBy missing from request call.
@@ -31,12 +27,12 @@ import sys, unittest, FlipTixShell
         String VerifyBy value.
         Array VerifyBy value.  
 
-        Email missing from request call.
-        Null Email value. 
-        Int Email value.    
-        Float Email value.   
-        String Email value.
-        Array Email value.  
+        phone missing from request call.
+        Null phone value. 
+        Int phone value.    
+        Float phone value.   
+        String phone value.
+        Array phone value.  
 
         VerificationCode missing from request call.
         Null VerificationCode value. 
@@ -51,6 +47,16 @@ class TestVerifyUser(unittest.TestCase):
     def setUpClass(cls):
         try:
             cls.user = FlipTixShell.FlipTix()      
+
+            cls.user.register_user(verifyBy=FlipTixShell.data['testVerifyBy'], 
+                                    email=FlipTixShell.data['testEmail'], 
+                                    phone=FlipTixShell.data['testPhone'],
+                                    firstName=FlipTixShell.data['testFirstName'], 
+                                    lastName=FlipTixShell.data['testLastName'], 
+                                    password=FlipTixShell.data['testPassword'])
+
+            cls.user.resend_code(verifyBy = FlipTixShell.data['testVerifyBy'],
+                                 phone = FlipTixShell.data['testPhone'])                        
         except:
             print("Unexpected error during setUpClass:", sys.exc_info()[0])
 
@@ -58,21 +64,29 @@ class TestVerifyUser(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         try:
-            pass
+            cls.user.delete_user(cls.user.GetUserId())
         except:
             print("Unexpected error during tearDownClass:", sys.exc_info()[0])
 
 
 
-
-    # Missing VerifyBy information from request call.
-    def test_doubleVerify(self):
-        # Missing VerifyBy value.
+    # Test successfully verifying a user.
+    def test_success(self):
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                             email = FlipTixShell.data['testVerifiedEmail'], 
-                                             verificationCode = FlipTixShell.data['testVerificationCode'])
+                                             phone = FlipTixShell.data['testPhone'], 
+                                             verificationCode = self.user.GetResendCode())
+        
+        self.assertEqual(responseBody['result'], "Your phone has been verified!", 
+                         msg= 'test_Success assert#1 has failed.')
 
-        self.assertEqual(responseBody['error'], 'Your code has expired. Please request another verification code',
+
+    # Verify a user who has already been verified.
+    def test_doubleVerify(self):
+        responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
+                                             phone = FlipTixShell.data['testPhone'], 
+                                             verificationCode = self.user.GetResendCode())
+
+        self.assertEqual(responseBody['error'], 'User already verified!',
                          msg='test_missingVerifyBy assert#1 has failed.')
 
 
@@ -86,156 +100,142 @@ class TestVerifyUser(unittest.TestCase):
         
     # Missing VerifyBy information from request call.
     def test_missingVerifyBy(self):
-        # Missing VerifyBy value.
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                             email = FlipTixShell.data['testEmail'], 
-                                             verificationCode = FlipTixShell.data['testVerificationCode'],
+                                             phone = FlipTixShell.data['testPhone'], 
+                                             verificationCode = self.user.GetResendCode(),
                                              verifyByExclude = True)
 
-        self.assertEqual(responseBody['error'], "Please specify email or phone",
+        self.assertEqual(responseBody['error'], 'User already verified!',
                          msg='test_missingVerifyBy assert#1 has failed.')
         
         
         
     # Test a null VerifyBy.
     def test_nullVerifyBy(self):
-        # Null VerifyBy value.
         responseBody = self.user.verify_user(verifyBy = '', 
-                                             email = FlipTixShell.data['testEmail'], 
-                                             verificationCode = FlipTixShell.data['testVerificationCode'])
+                                             phone = FlipTixShell.data['testPhone'], 
+                                             verificationCode = self.user.GetResendCode())
 
-        self.assertEqual(responseBody['error'], "Please specify email or phone",
+        self.assertEqual(responseBody['error'], 'User already verified!',
                           msg='test_nullVerifyBy assert#1 has failed.')
 
 
 
     # Test a int VerifyBy.
     def test_intVerifyBy(self):
-        # Int VerifyBy value.
         responseBody = self.user.verify_user(verifyBy = 123456, 
-                                             email = FlipTixShell.data['testEmail'], 
-                                             verificationCode = FlipTixShell.data['testVerificationCode'])
+                                             phone = FlipTixShell.data['testPhone'], 
+                                             verificationCode = self.user.GetResendCode())
 
-        self.assertEqual(responseBody['error'], "Please specify email or phone",
+        self.assertEqual(responseBody['error'], 'User already verified!',
                           msg='test_intVerifyBy assert#1 has failed.')
 
 
 
     # Test a float VerifyBy.
     def test_floatVerifyBy(self):
-        # Float VerifyBy value.
         responseBody = self.user.verify_user(verifyBy = 12.35186, 
-                                             email = FlipTixShell.data['testEmail'], 
-                                             verificationCode = FlipTixShell.data['testVerificationCode'])
+                                             phone = FlipTixShell.data['testPhone'], 
+                                             verificationCode = self.user.GetResendCode())
 
-        self.assertEqual(responseBody['error'], "Please specify email or phone",
+        self.assertEqual(responseBody['error'], 'User already verified!',
                           msg='test_floatVerifyBy assert#1 has failed.')
         
         
         
     # Test a string VerifyBy value call.
     def test_stringVerifyBy(self):
-        # String VerifyBy value.
         responseBody = self.user.verify_user(verifyBy = "This is invalid", 
-                                             email = FlipTixShell.data['testEmail'], 
-                                             verificationCode = FlipTixShell.data['testVerificationCode'])
+                                             phone = FlipTixShell.data['testPhone'], 
+                                             verificationCode = self.user.GetResendCode())
 
-        self.assertEqual(responseBody['error'], "Please specify email or phone",
+        self.assertEqual(responseBody['error'], 'User already verified!',
                           msg='test_stringVerifyBy assert#1 has failed.')
 
 
 
     # Test an array VerifyBy value call.
     def test_arrayVerifyBy(self):
-        # Array VerifyBy value.
         responseBody = self.user.verify_user(verifyBy = ['invalid', 1, 1.1], 
-                                             email = FlipTixShell.data['testEmail'], 
-                                             verificationCode = FlipTixShell.data['testVerificationCode'])
+                                             phone = FlipTixShell.data['testPhone'], 
+                                             verificationCode = self.user.GetResendCode())
 
-        self.assertEqual(responseBody['error'], "Please specify email or phone",
+        self.assertEqual(responseBody['error'], 'User already verified!',
                           msg='test_arrayVerifyBy assert#1 has failed.')
 
 
 
     
     # *********************************************************************
-    # *                         Email tests                               *
+    # *                         Phone tests                               *
     # *********************************************************************
     
     
         
-    # Missing Email information from request call.
-    def test_missingEmail(self):
-        # Missing Email value.
+    # Missing Phone information from request call.
+    def test_missingPhone(self):
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                             email = FlipTixShell.data['testEmail'], 
-                                             verificationCode = FlipTixShell.data['testVerificationCode'],
-                                             emailExclude = True)
+                                             phone = FlipTixShell.data['testPhone'], 
+                                             verificationCode = self.user.GetResendCode(),
+                                             phoneExclude = True)
 
-        self.assertEqual(responseBody['error'], "Please submit an email",
-                         msg='test_missingEmail assert#1 has failed.')
+        self.assertEqual(responseBody['error'], "Please submit a phone number",
+                         msg='test_missingPhone assert#1 has failed.')
         
         
         
-    # Test a null Email.
-    def test_nullEmail(self):
-        # Null Email value.
+    # Test a null Phone.
+    def test_nullPhone(self):
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                             email = '', 
-                                             verificationCode = FlipTixShell.data['testVerificationCode'])
+                                             phone = '', 
+                                             verificationCode = self.user.GetResendCode())
 
-        self.assertEqual(responseBody['error'], "Please submit an email",
-                          msg='test_nullEmail assert#1 has failed.')
+        self.assertEqual(responseBody['error'], "Please submit a phone number",
+                          msg='test_nullPhone assert#1 has failed.')
 
 
 
-    # Test a int Email.
-    # @unittest.skip("Unable to test int email value because error msg defaults to verification code")
-    def test_intEmail(self):
-        # Int Email value.
+    # Test a int Phone.
+    def test_intPhone(self):
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                             email = 6666666666666666666, 
-                                             verificationCode = FlipTixShell.data['testVerificationCode'])
+                                             phone = 6666666666666666666, 
+                                             verificationCode = self.user.GetResendCode())
 
         self.assertEqual(responseBody['error'], "User was not found",
-                          msg='test_intEmail assert#1 has failed.')
+                          msg='test_intPhone assert#1 has failed.')
 
 
 
-    # Test a float Email.
-    # @unittest.skip("Unable to test float email value because error msg defaults to verification code")
-    def test_floatEmail(self):
-        # Float Email value.
+    # Test a float Phone.
+    def test_floatPhone(self):
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                             email = 6.66, 
-                                             verificationCode = FlipTixShell.data['testVerificationCode'])
+                                             phone = 6.66, 
+                                             verificationCode = self.user.GetResendCode())
 
         self.assertEqual(responseBody['error'], "User was not found",
-                          msg='test_floatEmail assert#1 has failed.')
+                          msg='test_floatPhone assert#1 has failed.')
         
         
         
-    # Test a string Email value call.
-    def test_stringEmail(self):
-        # String Email value.
+    # Test a string Phone value call.
+    def test_stringPhone(self):
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                             email = "Invalid Format & User", 
-                                             verificationCode = FlipTixShell.data['testVerificationCode'])
+                                             phone = "Invalid Format & User", 
+                                             verificationCode = self.user.GetResendCode())
 
         self.assertEqual(responseBody['error'], "User was not found",
-                          msg='test_stringEmail assert#1 has failed.')
+                          msg='test_stringPhone assert#1 has failed.')
 
 
 
-    # Test an array Email value call.
-    def test_arrayEmail(self):
-        # Array Email value.
+    # Test an array Phone value call.
+    def test_arrayPhone(self):
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                             email = ["Invalid Format & User"], 
-                                             verificationCode = FlipTixShell.data['testVerificationCode'])
+                                             phone = ["Invalid Format & User"], 
+                                             verificationCode = self.user.GetResendCode())
 
         self.assertEqual(responseBody['error'], "User was not found",
-                          msg='test_arrayEmail assert#1 has failed.')
+                          msg='test_arrayPhone assert#1 has failed.')
 
 
 
@@ -247,10 +247,9 @@ class TestVerifyUser(unittest.TestCase):
         
     # Missing VerificationCode information from request call.
     def test_missingVerificationCode(self):
-        # Missing VerificationCode value.
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                             email = FlipTixShell.data['testEmail'], 
-                                             verificationCode = FlipTixShell.data['testVerificationCode'],
+                                             phone = FlipTixShell.data['testPhone'], 
+                                             verificationCode = self.user.GetResendCode(),
                                              verificationCodeExclude = True)
 
         self.assertEqual(responseBody['error'], "Please submit a verification code",
@@ -260,9 +259,8 @@ class TestVerifyUser(unittest.TestCase):
         
     # Test a null VerificationCode.
     def test_nullVerificationCode(self):
-        # Null VerificationCode value.
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                             email = FlipTixShell.data['testEmail'], 
+                                             phone = FlipTixShell.data['testPhone'], 
                                              verificationCode = '')
 
         self.assertEqual(responseBody['error'], "Please submit a verification code",
@@ -272,51 +270,44 @@ class TestVerifyUser(unittest.TestCase):
 
     # Test a int VerificationCode.
     def test_intVerificationCode(self):
-        # Int VerificationCode value.
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                             email = FlipTixShell.data['testVerifiedEmail'], 
+                                             phone = FlipTixShell.data['testPhone'], 
                                              verificationCode = 111)
 
-        self.assertEqual(responseBody['error'], "Your code has expired. Please request another verification code",
+        self.assertEqual(responseBody['error'], 'Incorrect verification code',
                           msg='test_intVerificationCode assert#1 has failed.')
 
 
 
     # Test a float VerificationCode.
-    # @unittest.skip("VerificationCode parameter can be any float value - (BUG)")
     def test_floatVerificationCode(self):
-        # Float VerificationCode value.
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                             email = FlipTixShell.data['testEmail'], 
+                                             phone = FlipTixShell.data['testPhone'], 
                                              verificationCode = 1.1)
 
-        self.assertEqual(responseBody['error'], "User was not found",
+        self.assertEqual(responseBody['error'], 'Incorrect verification code',
                           msg='test_floatVerificationCode assert#1 has failed.')
         
         
         
     # Test a string VerificationCode value call.
-    # @unittest.skip("VerificationCode parameter can be any string value - (BUG)")
     def test_stringVerificationCode(self):
-        # String VerificationCode value.
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                             email = FlipTixShell.data['testEmail'], 
+                                             phone = FlipTixShell.data['testPhone'], 
                                              verificationCode = 'Anything will not do.')
 
-        self.assertEqual(responseBody['error'], "User was not found",
+        self.assertEqual(responseBody['error'], 'Incorrect verification code',
                           msg='test_stringVerificationCode assert#1 has failed.')
 
 
 
     # Test an array VerificationCode value call.
-    # @unittest.skip("VerificationCode parameter can be any array value - (BUG)")
     def test_arrayVerificationCode(self):
-        # Array VerificationCode value.
         responseBody = self.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
-                                             email = FlipTixShell.data['testEmail'], 
+                                             phone = FlipTixShell.data['testPhone'], 
                                              verificationCode = ['test'])
 
-        self.assertEqual(responseBody['error'], "User was not found",
+        self.assertEqual(responseBody['error'], 'Incorrect verification code',
                           msg='test_arrayVerificationCode assert#1 has failed.')
     
     
@@ -327,6 +318,8 @@ class TestVerifyUser(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
 
+    suite.addTest(TestVerifyUser('test_success'))
+
     suite.addTest(TestVerifyUser('test_doubleVerify'))
 
     suite.addTest(TestVerifyUser('test_missingVerifyBy'))
@@ -336,12 +329,12 @@ def suite():
     suite.addTest(TestVerifyUser('test_stringVerifyBy'))
     suite.addTest(TestVerifyUser('test_arrayVerifyBy'))
 
-    suite.addTest(TestVerifyUser('test_missingEmail'))
-    suite.addTest(TestVerifyUser('test_nullEmail'))
-    suite.addTest(TestVerifyUser('test_intEmail'))
-    suite.addTest(TestVerifyUser('test_floatEmail'))
-    suite.addTest(TestVerifyUser('test_stringEmail'))
-    suite.addTest(TestVerifyUser('test_arrayEmail'))
+    suite.addTest(TestVerifyUser('test_missingPhone'))
+    suite.addTest(TestVerifyUser('test_nullPhone'))
+    suite.addTest(TestVerifyUser('test_intPhone'))
+    suite.addTest(TestVerifyUser('test_floatPhone'))
+    suite.addTest(TestVerifyUser('test_stringPhone'))
+    suite.addTest(TestVerifyUser('test_arrayPhone'))
 
     suite.addTest(TestVerifyUser('test_missingVerificationCode'))
     suite.addTest(TestVerifyUser('test_nullVerificationCode'))

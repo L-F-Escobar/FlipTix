@@ -28,7 +28,24 @@ class TestSendForgotPassword(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         try:
-            cls.user = FlipTixShell.FlipTix()      
+            cls.user = FlipTixShell.FlipTix()     
+
+            cls.user.register_user(verifyBy=FlipTixShell.data['testVerifyBy'], 
+                                    email=FlipTixShell.data['testEmail'], 
+                                    phone=FlipTixShell.data['testPhone'],
+                                    firstName=FlipTixShell.data['testFirstName'], 
+                                    lastName=FlipTixShell.data['testLastName'], 
+                                    password=FlipTixShell.data['testPassword']) 
+
+            cls.user.resend_code(verifyBy = FlipTixShell.data['testVerifyBy'],
+                                 phone = FlipTixShell.data['testPhone'])
+
+            cls.user.verify_user(verifyBy = FlipTixShell.data['testVerifyBy'], 
+                                 phone = FlipTixShell.data['testPhone'], 
+                                 verificationCode = cls.user.GetResendCode())
+
+            cls.user.login(email = FlipTixShell.data['testEmail'], 
+                           password = FlipTixShell.data['testPassword'])    
         except:
             print("Unexpected error during setUpClass:", sys.exc_info()[0])
 
@@ -36,7 +53,7 @@ class TestSendForgotPassword(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         try:
-            pass
+            cls.user.delete_user(cls.user.GetUserId())
         except:
             print("Unexpected error during tearDownClass:", sys.exc_info()[0])
     
@@ -45,8 +62,7 @@ class TestSendForgotPassword(unittest.TestCase):
 
     # Test successfully sending a verification code to the users email.
     def test_success(self):
-        # Log in.
-        responseBody = self.user.send_forgot_password(email = FlipTixShell.data['testVerifiedEmail'])
+        responseBody = self.user.send_forgot_password(email = FlipTixShell.data['testEmail'])
         
         self.assertEqual(responseBody['result'], "Verification code has been sent. Please check your email.", 
                          msg= 'test_Success assert#1 has failed.')
@@ -62,8 +78,7 @@ class TestSendForgotPassword(unittest.TestCase):
         
     # Missing Email information from request call.
     def test_missingEmail(self):
-        # Missing Email value.
-        responseBody = self.user.send_forgot_password(email = FlipTixShell.data['testVerifiedEmail'],
+        responseBody = self.user.send_forgot_password(email = FlipTixShell.data['testEmail'],
                                                       emailExclude = True)
 
         self.assertEqual(responseBody['error'], "Please submit a user email",
@@ -73,7 +88,6 @@ class TestSendForgotPassword(unittest.TestCase):
         
     # Test a null Email.
     def test_nullEmail(self):
-        # Null Email value.
         responseBody = self.user.send_forgot_password(email = '')
 
         self.assertEqual(responseBody['error'], "Please submit a user email",
@@ -82,9 +96,7 @@ class TestSendForgotPassword(unittest.TestCase):
 
 
     # Test a int Email.
-    # @unittest.skip("Email parameter can be any integar value - (BUG)")
     def test_intEmail(self):
-        # Int Email value.
         responseBody = self.user.send_forgot_password(email = 12222222222222222)
 
         self.assertEqual(responseBody['error'], "user could not be found",
@@ -93,9 +105,7 @@ class TestSendForgotPassword(unittest.TestCase):
 
 
     # Test a float Email.
-    # @unittest.skip("Email parameter can be any float value - (BUG)")
     def test_floatEmail(self):
-        # Float Email value.
         responseBody = self.user.send_forgot_password(email = 1.2)
 
         self.assertEqual(responseBody['error'], "user could not be found",
@@ -104,9 +114,7 @@ class TestSendForgotPassword(unittest.TestCase):
         
         
     # Test a string Email value call.
-    # @unittest.skip("Email parameter can be any string value - (BUG)")
     def test_stringEmail(self):
-        # String Email value.
         responseBody = self.user.send_forgot_password(email = 'This is not proper email format.')
 
         self.assertEqual(responseBody['error'], "user could not be found",
@@ -115,9 +123,7 @@ class TestSendForgotPassword(unittest.TestCase):
 
 
     # Test an array Email value call.
-    # @unittest.skip("Email parameter can be any string value - (BUG)")
     def test_arrayEmail(self):
-        # Array Email value.
         responseBody = self.user.send_forgot_password(email = ['Invalid email format'])
 
         self.assertEqual(responseBody['error'], "user could not be found",
